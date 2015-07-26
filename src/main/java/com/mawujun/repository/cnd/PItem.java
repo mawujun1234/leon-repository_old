@@ -25,7 +25,7 @@ public interface PItem {
 //	 */
 //	void joinSql(AbstractEntityPersister classMetadata, StringBuilder sb);
 	
-	void joinHql( StringBuilder sb);
+	public void joinHql( StringBuilder sb);
 
 //	/**
 //	 * 根据自身的元素内容，为适配器数组填充适配器
