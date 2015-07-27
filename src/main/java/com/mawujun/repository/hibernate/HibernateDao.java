@@ -1137,7 +1137,7 @@ public class HibernateDao<T, ID extends Serializable> implements IHibernateDao<T
 //		int totalCount = countCriteriaResult(criteria);
 //		return totalCount;
 //	}
-	public Long queryCount(Cnd cnd) {
+	public int queryCount(Cnd cnd) {
 		cnd.setSqlType(SqlType.SELECT);
 		cnd.setCount();
 		//StringBuilder builder=new StringBuilder("select count(*)   ");
@@ -1173,9 +1173,9 @@ public class HibernateDao<T, ID extends Serializable> implements IHibernateDao<T
 		//return ((Long)query.uniqueResult()).intValue();
 		Long result=(Long)query.uniqueResult();
 		if(result==null){
-			return 0l;
+			return 0;
 		} else {
-			return result;
+			return result.intValue();
 		}
 		 
 	}

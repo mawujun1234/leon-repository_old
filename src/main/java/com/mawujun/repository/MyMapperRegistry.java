@@ -35,7 +35,7 @@ public class MyMapperRegistry extends MapperRegistry {
 		    return knownMappersNew.containsKey(type);
 	}
 	public Collection<Class<?>> getMappers() {
-		    return Collections.unmodifiableCollection(knownMappersNew.keySet());
+		   return Collections.unmodifiableCollection(knownMappersNew.keySet());
 	}
 	@Override
 	public <T> void addMapper(Class<T> type) {

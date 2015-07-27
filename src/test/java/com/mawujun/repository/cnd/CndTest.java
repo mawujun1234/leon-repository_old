@@ -1,16 +1,6 @@
 package com.mawujun.repository.cnd;
 
-import static com.mawujun.repository.cnd.Exps.gt;
-import static com.mawujun.repository.cnd.Exps.gte;
-import static com.mawujun.repository.cnd.Exps.inInt;
-import static com.mawujun.repository.cnd.Exps.inLong;
-import static com.mawujun.repository.cnd.Exps.inSql;
-import static com.mawujun.repository.cnd.Exps.inStr;
-import static com.mawujun.repository.cnd.Exps.like;
-import static com.mawujun.repository.cnd.Exps.lt;
-import static com.mawujun.repository.cnd.Exps.lte;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 
@@ -26,35 +16,31 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mawujun.mybatis.MybatisUtil;
-import com.mawujun.repository.BaseRepository;
 import com.mawujun.repository.EntityTest;
-import com.mawujun.repository.cnd.Cnd;
-import com.mawujun.test.DbunitBaseRepositoryTest;
-import com.mawujun.utils.FileUtils;
-import com.mawujun.utils.hibernate.HibernateUtil;
-import com.mawujun.utils.page.WhereInfo;
+import com.mawujun.repository.hibernate.HibernateUtils;
+import com.mawujun.utils.file.FileUtils;
+import com.mawujun.utils.test.DbunitBaseRepositoryTest;
 
 public class CndTest  extends DbunitBaseRepositoryTest {
 	private String EntityTest_TableName="t_EntityTest";
-	private static BaseRepository<EntityTest,Integer> repository;
+	//private static BaseRepository<EntityTest,Integer> repository;
 	private static SessionFactory sessionFactory;
 	private static SqlSessionFactory sqlSessionFactory;
 	
-	private static class EntityTestRepository extends BaseRepository<EntityTest,Integer> {
-
-
-		
-	}
+//	private static class EntityTestRepository extends BaseRepository<EntityTest,Integer> {
+//
+//
+//		
+//	}
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DbunitBaseRepositoryTest.initHibernate("com/mawujun/repository/hibernate.properties");
-		repository=new  EntityTestRepository();
-		sessionFactory=HibernateUtil.getSessionFactory("com/mawujun/repository/hibernate.cfg.xml","com/mawujun/repository/hibernate.properties");
-		sqlSessionFactory=MybatisUtil.getSessionFactory("com/mawujun/repository/Configuration.xml");
-		repository.setSessionFactory(sessionFactory);
-		repository.setSqlSessionFactory(sqlSessionFactory);
+		//repository=new  EntityTestRepository();
+		sessionFactory=HibernateUtils.getSessionFactory("com/mawujun/repository/hibernate.cfg.xml","com/mawujun/repository/hibernate.properties");
+		//sqlSessionFactory=MybatisUtils.getSessionFactory("com/mawujun/repository/Configuration.xml");
+		//repository.setSessionFactory(sessionFactory);
+		//repository.setSqlSessionFactory(sqlSessionFactory);
 	}
 
 	@AfterClass

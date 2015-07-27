@@ -66,7 +66,7 @@ public interface IHibernateDao <T, ID extends Serializable>{
 	public int deleteBatch(final ID... IDS);
 	
 	
-	public Long queryCount(Cnd cnd);
+	public int queryCount(Cnd cnd);
 	public Object queryMax(String property,Cnd cnd);
 	public Object queryMax(Cnd cnd);
 	public Object queryMin(String property,Cnd cnd);

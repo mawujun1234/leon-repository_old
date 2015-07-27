@@ -1,5 +1,6 @@
 package com.mawujun.repository;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +18,10 @@ public class EntityTest extends AutoIdEntity<Integer> {
 	private String firstName;
 	private String lastName;
 	private Integer age;
+	
+	@org.hibernate.annotations.Type(type="yes_no")
+	@Column(length=1)
+	private Boolean sex;
 	@Email
 	private String email;
 	@Version
@@ -71,6 +76,12 @@ public class EntityTest extends AutoIdEntity<Integer> {
 	}
 	public void setParent(Parent parent) {
 		this.parent = parent;
+	}
+	public Boolean getSex() {
+		return sex;
+	}
+	public void setSex(Boolean sex) {
+		this.sex = sex;
 	}
 
 }

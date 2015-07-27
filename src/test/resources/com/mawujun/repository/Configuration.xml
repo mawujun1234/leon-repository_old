@@ -11,9 +11,13 @@
  	
  	<typeAliases>
 		<!-- <typeAlias type="com.mawujun.repository.mybatis.Record" alias="record"/> -->
-		<package name="com.mawujun.repository.mybatis"/><!-- 会自动从这个包里搜索使用了@Alias("record")的类 -->
+		<!--<package name="com.mawujun.repository.mybatis"/> 会自动从这个包里搜索使用了@Alias("record")的类 -->
 	</typeAliases>
 	
+	<typeHandlers>
+ 		<typeHandler handler="com.mawujun.repository.mybatis.YesNoTypeHandler" javaType="java.lang.Boolean"/>
+ 	</typeHandlers>
+ 	
 	<plugins>
  		<plugin interceptor="com.mawujun.repository.mybatis.PageInterceptor">
  			<property name="dialectClass" value="${mybatis.dialectClass}"/>
@@ -42,7 +46,7 @@
 	</databaseIdProvider>
 	
 	<mappers>
-		<mapper resource="com\mawujun\repository\EntityTest_Mapper.xml"/>
+		<mapper class="com.mawujun.repository.EquipmentTypeRepository"/>
 	</mappers>
 
  	

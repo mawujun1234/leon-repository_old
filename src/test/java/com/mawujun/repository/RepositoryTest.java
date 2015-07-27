@@ -2,9 +2,9 @@ package com.mawujun.repository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,9 @@ import java.util.Map;
 
 import javax.validation.ConstraintViolationException;
 
-import org.apache.commons.lang3.ClassUtils;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -28,34 +29,51 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mawujun.mybatis.MybatisUtil;
 import com.mawujun.repository.cnd.Cnd;
-import com.mawujun.test.DbunitBaseRepositoryTest;
-import com.mawujun.utils.FileUtils;
-import com.mawujun.utils.hibernate.HibernateUtil;
-import com.mawujun.utils.page.PageRequest;
-import com.mawujun.utils.page.QueryResult;
-import com.mawujun.utils.page.WhereInfo;
+import com.mawujun.repository.hibernate.HibernateUtils;
+import com.mawujun.repository.mybatis.MybatisUtils;
+import com.mawujun.utils.file.FileUtils;
+import com.mawujun.utils.page.PageParam;
+import com.mawujun.utils.page.PageResult;
+import com.mawujun.utils.test.DbunitBaseRepositoryTest;
 
 public class RepositoryTest extends DbunitBaseRepositoryTest {
 	
 	private String EntityTest_TableName="t_EntityTest";
-	private static BaseRepository<EntityTest,Integer> repository;
+	//private static BaseRepository<EntityTest,Integer> repository;
 	private static SessionFactory sessionFactory;
 	private static SqlSessionFactory sqlSessionFactory;
 	
-	private static class EntityTestRepository extends BaseRepository<EntityTest,Integer> {
-		
-	}
+//	private static class EntityTestRepository implements IRepository<EntityTest,Integer> {
+//		
+//	}
+	
+	private static EquipmentTypeRepository repository;
+
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DbunitBaseRepositoryTest.initHibernate("com/mawujun/repository/hibernate.properties");
-		repository=new  EntityTestRepository();
-		sessionFactory=HibernateUtil.getSessionFactory("com/mawujun/repository/hibernate.cfg.xml","com/mawujun/repository/hibernate.properties");
-		sqlSessionFactory=MybatisUtil.getSessionFactory("com/mawujun/repository/Configuration.xml");
-		repository.setSessionFactory(sessionFactory);
-		repository.setSqlSessionFactory(sqlSessionFactory);
+		//repository=new  EntityTestRepository();
+		sessionFactory=HibernateUtils.getSessionFactory("com/mawujun/repository/hibernate.cfg.xml","com/mawujun/repository/hibernate.properties");
+		sqlSessionFactory=MybatisUtils.getSessionFactory("com/mawujun/repository/Configuration.xml");
+		//repository.setSessionFactory(sessionFactory);
+		//repository.setSqlSessionFactory(sqlSessionFactory);
+		
+		//往mybatis的类中增加sessionfactory
+		Configuration configuration=sqlSessionFactory.getConfiguration();
+		MyMapperRegistry mapperRegistry=new MyMapperRegistry(configuration);
+		mapperRegistry.setSessionFactory(sessionFactory);
+		Field field = configuration.getClass().getDeclaredField("mapperRegistry");
+		field.setAccessible(true);
+		field.set(configuration, mapperRegistry);
+		
+		//这行必须加，这行就是利用MyMapperRegistry把EquipmentTypeRepository加进来
+		configuration.addMapper(EquipmentTypeRepository.class);
+		//SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+		//sqlSessionFactory= builder.build(configuration);
+		
+		repository= sqlSessionFactory.openSession().getMapper(EquipmentTypeRepository.class);
 	}
 
 	@AfterClass
@@ -86,7 +104,33 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 		assertEquals("admin1",entity.getFirstName());
 		assertEquals("123",entity.getLastName());
 		assertEquals(1,entity.getVersion());
+		assertEquals(true,entity.getSex());
 		tx.commit();
+	}
+	@Test
+	public void testBooleanType() {
+		//fail("Not yet implemented");
+		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+		EntityTest entity=repository.get(1);
+		assertEquals(new Integer(1),entity.getId());
+		assertEquals("admin1",entity.getFirstName());
+		assertEquals("123",entity.getLastName());
+		assertEquals(1,entity.getVersion());
+		assertEquals(true,entity.getSex());
+		
+		
+		tx.commit();
+	}
+	
+
+	@Test
+	public void testQueryPage() {
+		PageParam param=PageParam.getInstance(0, 10);
+		PageResult<EntityTest> lists=repository.queryPage(param);
+		assertEquals(3,lists.getTotal());
+		assertEquals(new Integer(1),lists.getResult().get(0).getId());
+		assertEquals(true,lists.getResult().get(0).getSex());
+		assertEquals(false,lists.getResult().get(1).getSex());
 	}
 	@Test
 	public void testSave() throws DataSetException, SQLException {
@@ -166,7 +210,7 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 	@Test
 	public void testDeleteSerializable() throws DataSetException, SQLException {
 		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		repository.delete(1);
+		repository.deleteById(1);
 		tx.commit();
 		
 		assertEquals(2,dbConn.getRowCount(EntityTest_TableName));
@@ -201,7 +245,7 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 			entity.setEmail("1@163.com");
 			entitys.add(entity);
 		}
-		repository.saveBatch(entitys);
+		repository.createBatch(entitys);
 		tx.commit();
 		assertEquals(13,dbConn.getRowCount(EntityTest_TableName));
 	}
@@ -259,7 +303,7 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 	@Test
 	public void testBatchDeleteAll() throws DataSetException, SQLException {
 		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		repository.deleteAllBatch();
+		repository.deleteAll();//.deleteAllBatch();
 		tx.commit();
 		
 		ITable table =dbConn.createTable(EntityTest_TableName);
@@ -371,16 +415,18 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 		assertEquals("123",table1.getValue(0, "lastName"));
 		assertEquals("admin1@163.com",table1.getValue(0, "email"));
 	}
+
+//	
 //	@Test
-//	public void testUpdateDynamicWhereInfo() throws DataSetException, SQLException{
+//	public void testUpdateDynamicCnd() throws DataSetException, SQLException{
 //		//fail("Not yet implemented");
 //		
 //		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
 //		EntityTest entity=new EntityTest();
 //		entity.setEmail("1111@11.com");
 //		
-//		WhereInfo where=new WhereInfo("age","in","20,30,40");//WhereInfo.parse("age_in", "20,30,40");
-//		repository.updateIgnoreNull(entity, where);
+//		//WhereInfo where=WhereInfo.parse("age_in", "20,30,40");
+//		repository.updateIgnoreNull(entity, Cnd.select().andIn("age", 20,30,40));
 //		tx.commit();
 //		
 //		ITable table =dbConn.createTable(EntityTest_TableName);
@@ -390,26 +436,6 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 //			assertEquals("1111@11.com",table.getValue(i, "email"));
 //		}
 //	}
-	
-	@Test
-	public void testUpdateDynamicCnd() throws DataSetException, SQLException{
-		//fail("Not yet implemented");
-		
-		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		EntityTest entity=new EntityTest();
-		entity.setEmail("1111@11.com");
-		
-		//WhereInfo where=WhereInfo.parse("age_in", "20,30,40");
-		repository.updateIgnoreNull(entity, Cnd.select().andIn("age", 20,30,40));
-		tx.commit();
-		
-		ITable table =dbConn.createTable(EntityTest_TableName);
-		assertEquals(3,table.getRowCount());
-		
-		for(int i=0;i<table.getRowCount();i++){
-			assertEquals("1111@11.com",table.getValue(i, "email"));
-		}
-	}
 
 	@Test
 	public void testBatchUpdateTArray() throws DataSetException, SQLException {
@@ -482,31 +508,31 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 		assertEquals(3,entitys.size());
 	}
 
-	@Test
-	public void testQueryByExample() {
-		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		EntityTest entity=new EntityTest();
-		entity.setLastName("123");
-		List<EntityTest> entitys=repository.queryByExample(entity);
-		tx.commit();
-		assertEquals(2,entitys.size());
-	}
-	
-	@Test
-	public void testQueryPage() {
-		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		WhereInfo whereinfo=new WhereInfo("age",">","20");//WhereInfo.parse("age_gt", "20");
-		WhereInfo whereinfo1=new WhereInfo("firstName","like","admin");//WhereInfo.parse("firstName_like", "admin");
-		WhereInfo whereinfo2=new WhereInfo("lastName","in",new String[]{"123","1234"});//WhereInfo.parse("lastName_in", "123","1234");
-		PageRequest page=new PageRequest();
-		page.setWheres(whereinfo,whereinfo1,whereinfo2);
-		page.setStratAndLimit(1, 10);
-		
-		QueryResult<EntityTest> entitys=repository.queryPage(page);
-		tx.commit();
-		assertEquals(2,entitys.getTotalItems());
-		assertEquals(1,entitys.getTotalPages());
-	}
+//	@Test
+//	public void testQueryByExample() {
+//		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+//		EntityTest entity=new EntityTest();
+//		entity.setLastName("123");
+//		List<EntityTest> entitys=repository.queryByExample(entity);
+//		tx.commit();
+//		assertEquals(2,entitys.size());
+//	}
+//	
+//	@Test
+//	public void testQueryPage() {
+//		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+//		WhereInfo whereinfo=new WhereInfo("age",">","20");//WhereInfo.parse("age_gt", "20");
+//		WhereInfo whereinfo1=new WhereInfo("firstName","like","admin");//WhereInfo.parse("firstName_like", "admin");
+//		WhereInfo whereinfo2=new WhereInfo("lastName","in",new String[]{"123","1234"});//WhereInfo.parse("lastName_in", "123","1234");
+//		PageRequest page=new PageRequest();
+//		page.setWheres(whereinfo,whereinfo1,whereinfo2);
+//		page.setStratAndLimit(1, 10);
+//		
+//		QueryResult<EntityTest> entitys=repository.queryPage(page);
+//		tx.commit();
+//		assertEquals(2,entitys.getTotalItems());
+//		assertEquals(1,entitys.getTotalPages());
+//	}
 	
 	@Test
 	public void testQueryCnd() {
@@ -518,49 +544,49 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 		assertEquals(2,entitys.size());
 		//assertEquals(1,entitys.getTotalPages());
 	}
-	@Test
-	public void testQueryCnd_Map() {
-		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		Cnd cnd=Cnd.select().andGT("age", 20).andLike("firstName", "admin").andIn("lastName", "123","1234").addSelect("age","firstName").asc("age");
-		
-		List<Map> entitys=repository.queryList(cnd,Map.class);
-		tx.commit();
-		
-		assertEquals(2,entitys.size());
-		assertEquals(true,entitys.get(0) instanceof Map);
-		assertEquals(30,entitys.get(0).get("age"));
-		assertEquals(40,entitys.get(1).get("age"));
-		//assertEquals(1,entitys.getTotalPages());
-	}
-	@Test
-	public void testQueryCnd_M() {
-		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		Cnd cnd=Cnd.select().andGT("age", 20).andLike("firstName", "admin").andIn("lastName", "123","1234").addSelect("age","firstName").asc("age");
-		
-		List<EntityTest> entitys=repository.queryList(cnd,EntityTest.class);
-		tx.commit();
-		
-		assertEquals(2,entitys.size());
-		assertEquals(true,entitys.get(0) instanceof EntityTest);
-		assertEquals((Integer)30,entitys.get(0).getAge());
-		assertEquals((Integer)40,entitys.get(1).getAge());
-		//assertEquals(1,entitys.getTotalPages());
-	}
-	
-	@Test
-	public void testQueryCnd_BaseType() {
-		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		Cnd cnd=Cnd.select().andGT("age", 20).andLike("firstName", "admin").andIn("lastName", "123","1234").addSelect("firstName").asc("age");
-		
-		List<String> entitys=repository.queryList(cnd,String.class);
-		tx.commit();
-		
-		assertEquals(2,entitys.size());
-		assertEquals(true,entitys.get(0) instanceof String);
-		//assertEquals((Integer)30,entitys.get(0).getAge());
-		//assertEquals((Integer)40,entitys.get(1).getAge());
-		//assertEquals(1,entitys.getTotalPages());
-	}
+//	@Test
+//	public void testQueryCnd_Map() {
+//		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+//		Cnd cnd=Cnd.select().andGT("age", 20).andLike("firstName", "admin").andIn("lastName", "123","1234").addSelect("age","firstName").asc("age");
+//		
+//		List<Map> entitys=repository.queryList(cnd,Map.class);
+//		tx.commit();
+//		
+//		assertEquals(2,entitys.size());
+//		assertEquals(true,entitys.get(0) instanceof Map);
+//		assertEquals(30,entitys.get(0).get("age"));
+//		assertEquals(40,entitys.get(1).get("age"));
+//		//assertEquals(1,entitys.getTotalPages());
+//	}
+//	@Test
+//	public void testQueryCnd_M() {
+//		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+//		Cnd cnd=Cnd.select().andGT("age", 20).andLike("firstName", "admin").andIn("lastName", "123","1234").addSelect("age","firstName").asc("age");
+//		
+//		List<EntityTest> entitys=repository.queryList(cnd,EntityTest.class);
+//		tx.commit();
+//		
+//		assertEquals(2,entitys.size());
+//		assertEquals(true,entitys.get(0) instanceof EntityTest);
+//		assertEquals((Integer)30,entitys.get(0).getAge());
+//		assertEquals((Integer)40,entitys.get(1).getAge());
+//		//assertEquals(1,entitys.getTotalPages());
+//	}
+//	
+//	@Test
+//	public void testQueryCnd_BaseType() {
+//		Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+//		Cnd cnd=Cnd.select().andGT("age", 20).andLike("firstName", "admin").andIn("lastName", "123","1234").addSelect("firstName").asc("age");
+//		
+//		List<String> entitys=repository.queryList(cnd,String.class);
+//		tx.commit();
+//		
+//		assertEquals(2,entitys.size());
+//		assertEquals(true,entitys.get(0) instanceof String);
+//		//assertEquals((Integer)30,entitys.get(0).getAge());
+//		//assertEquals((Integer)40,entitys.get(1).getAge());
+//		//assertEquals(1,entitys.getTotalPages());
+//	}
 	
 	@Test
 	public void testQueryCountCnd() {
@@ -691,41 +717,41 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 	}
 
 	
-	@Test
-	public void testQueryPageByMybatis() {
-		//Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		
-		WhereInfo whereinfo=new WhereInfo("age",">","20");//WhereInfo.parse("age_gt", "20");
-		WhereInfo whereinfo1=new WhereInfo("firstName","like","admin");//WhereInfo.parse("firstName_like", "admin");
-		WhereInfo whereinfo2=new WhereInfo("lastName","in",new String[]{"123","1234"});//WhereInfo.parse("lastName_in", "123","1234");
-		WhereInfo whereinfo3=new WhereInfo("id","between",new String[]{"1","2"});//WhereInfo.parse("id_between", "1","2");
-		PageRequest page=new PageRequest();
-		page.setWheres(whereinfo,whereinfo1,whereinfo2,whereinfo3);
-		page.setStratAndLimit(1, 10);
-		page.setSqlId("queryPage");
-		
-		QueryResult<EntityTest> entitys=repository.queryPageMybatis(page);
-		//tx.commit();
-		assertEquals(1,entitys.getTotalItems());
-		assertEquals(1,entitys.getTotalPages());
-	}
-	
-	@Test
-	public void testQueryPageByMybatis1() {
-		//Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
-		
-		WhereInfo whereinfo=new WhereInfo("age",">","20");//;WhereInfo.parse("age_gt", "20");
-		WhereInfo whereinfo1=new WhereInfo("firstName","like","admin");//WhereInfo.parse("firstName_like", "admin");
-		WhereInfo whereinfo2=new WhereInfo("lastName","in",new String[]{"123","1234"});//WhereInfo.parse("lastName_in", "123","1234");
-		WhereInfo whereinfo3=new WhereInfo("id","between",new String[]{"1","2"});//WhereInfo.parse("id_between", "1","2");
-		PageRequest page=new PageRequest();
-		page.setWheres(whereinfo,whereinfo1,whereinfo2,whereinfo3);
-		page.setStratAndLimit(1, 10);
-		//主要测试getMybatisStataement方法会不会自动组装com.mawujun.repository.EntityTest.queryPage
-		QueryResult<EntityTest> entitys=repository.queryPageMybatis("queryPage",page);
-		//tx.commit();
-		assertEquals(1,entitys.getTotalItems());
-		assertEquals(1,entitys.getTotalPages());
-	}
+//	@Test
+//	public void testQueryPageByMybatis() {
+//		//Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+//		
+//		WhereInfo whereinfo=new WhereInfo("age",">","20");//WhereInfo.parse("age_gt", "20");
+//		WhereInfo whereinfo1=new WhereInfo("firstName","like","admin");//WhereInfo.parse("firstName_like", "admin");
+//		WhereInfo whereinfo2=new WhereInfo("lastName","in",new String[]{"123","1234"});//WhereInfo.parse("lastName_in", "123","1234");
+//		WhereInfo whereinfo3=new WhereInfo("id","between",new String[]{"1","2"});//WhereInfo.parse("id_between", "1","2");
+//		PageRequest page=new PageRequest();
+//		page.setWheres(whereinfo,whereinfo1,whereinfo2,whereinfo3);
+//		page.setStratAndLimit(1, 10);
+//		page.setSqlId("queryPage");
+//		
+//		QueryResult<EntityTest> entitys=repository.queryPageMybatis(page);
+//		//tx.commit();
+//		assertEquals(1,entitys.getTotalItems());
+//		assertEquals(1,entitys.getTotalPages());
+//	}
+//	
+//	@Test
+//	public void testQueryPageByMybatis1() {
+//		//Transaction tx = sessionFactory.getCurrentSession().beginTransaction(); 
+//		
+//		WhereInfo whereinfo=new WhereInfo("age",">","20");//;WhereInfo.parse("age_gt", "20");
+//		WhereInfo whereinfo1=new WhereInfo("firstName","like","admin");//WhereInfo.parse("firstName_like", "admin");
+//		WhereInfo whereinfo2=new WhereInfo("lastName","in",new String[]{"123","1234"});//WhereInfo.parse("lastName_in", "123","1234");
+//		WhereInfo whereinfo3=new WhereInfo("id","between",new String[]{"1","2"});//WhereInfo.parse("id_between", "1","2");
+//		PageRequest page=new PageRequest();
+//		page.setWheres(whereinfo,whereinfo1,whereinfo2,whereinfo3);
+//		page.setStratAndLimit(1, 10);
+//		//主要测试getMybatisStataement方法会不会自动组装com.mawujun.repository.EntityTest.queryPage
+//		QueryResult<EntityTest> entitys=repository.queryPageMybatis("queryPage",page);
+//		//tx.commit();
+//		assertEquals(1,entitys.getTotalItems());
+//		assertEquals(1,entitys.getTotalPages());
+//	}
 
 }

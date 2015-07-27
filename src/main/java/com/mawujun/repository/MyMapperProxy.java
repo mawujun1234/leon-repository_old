@@ -1,6 +1,7 @@
 package com.mawujun.repository;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -19,6 +20,7 @@ import com.mawujun.repository.hibernate.IHibernateDao;
 import com.mawujun.repository.mybatis.MybatisRepository;
 import com.mawujun.utils.Assert;
 import com.mawujun.utils.page.PageParam;
+import com.mawujun.utils.page.PageResult;
 
 /**
  * z这个类也可以自己扩展，例如要把某些逻辑写在持久层里的时候，可以为某些类专门指定使用哪个Proxy
@@ -77,11 +79,19 @@ public class MyMapperProxy<T> extends MapperProxy<T> {
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		//继承自IHibernateRepository的方法就在hibernate中执行，如果在子接口中重载了的话，就不会进入这里了
 		if(method.getDeclaringClass()==IHibernateDao.class) {
-			return invokeByHibernate(proxy, method, args);
+			//return invokeByHibernate(proxy, method, args);
+			try {
+				return invokeByHibernate(proxy, method, args);
+			} catch(InvocationTargetException e) {
+				
+				//System.out.println(e);
+				//跑出原始的异常
+				throw e.getTargetException();
+			}
 		} else {
 			Class[] paramTypes=method.getParameterTypes();
 			//如果是分页的话
-			if(paramTypes.length==1 && paramTypes[0]==PageParam.class && method.getReturnType()==PageParam.class){
+			if(paramTypes.length==1 && paramTypes[0]==PageParam.class && method.getReturnType()==PageResult.class){
 				return mybatisRepository.selectPage(namespace+"."+method.getName(), (PageParam)args[0]);
 			} else {
 				 return super.invoke(proxy, method, args);
