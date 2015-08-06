@@ -8,6 +8,11 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
+/**
+ * 使用T或F来表示 true和false
+ * @author mawujun email:16064988@qq.com qq:16064988
+ *
+ */
 public class TrueFalseTypeHandler extends BaseTypeHandler<Boolean>{
 
 	private static final String YES="T";

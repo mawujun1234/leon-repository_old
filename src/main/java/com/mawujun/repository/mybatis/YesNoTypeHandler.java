@@ -8,6 +8,11 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
+/**
+ * 使用Y 或N来表示true或fasle
+ * @author mawujun email:16064988@qq.com qq:16064988
+ *
+ */
 public class YesNoTypeHandler extends BaseTypeHandler<Boolean>{
 
 	private static final String YES="Y";

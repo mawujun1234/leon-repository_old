@@ -2,11 +2,15 @@ package com.mawujun.repository.mybatis;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.Date;
+
+import com.mawujun.utils.DateUtils;
 
 
 public class DataParser
 {
-	public String parseString(Object val)
+	public static String parseString(Object val)
 	{
 		if(val==null) return null;
 		if(val instanceof String)
@@ -19,10 +23,10 @@ public class DataParser
 		}
 	}
 	
-	YesNoTypeHandler yn=new YesNoTypeHandler();
-	TrueFalseTypeHandler tf=new TrueFalseTypeHandler();
-	BitTypeHandler bit=new BitTypeHandler();
-	public Boolean parseBoolean(Object val)
+	static YesNoTypeHandler yn=new YesNoTypeHandler();
+	static TrueFalseTypeHandler tf=new TrueFalseTypeHandler();
+	static BitTypeHandler bit=new BitTypeHandler();
+	public static Boolean parseBoolean(Object val)
 	{
 		if(val==null) return null;
 		if(val instanceof Boolean)
@@ -55,7 +59,7 @@ public class DataParser
 		}
 	}
 	
-	public Byte parseByte(Object val)
+	public static Byte parseByte(Object val)
 	{
 		if(val==null) return null;
 		if(isNumberType(val))
@@ -76,7 +80,7 @@ public class DataParser
 		}
 	}
 	
-	public Integer parseInteger(Object val)
+	public static Integer parseInteger(Object val)
 	{
 		if(val==null) return null;
 		if(val instanceof Long)
@@ -103,7 +107,7 @@ public class DataParser
 	
 	 
 	
-	public BigInteger parseBigInteger(Object val)
+	public static BigInteger parseBigInteger(Object val)
 	{
 		if(val==null) return null;
 		if(val instanceof BigInteger)
@@ -125,7 +129,7 @@ public class DataParser
 		}
 	}
 	
-	public Float parseFloat(Object val)
+	public static Float parseFloat(Object val)
 	{
 		if(val==null) return null;
 		if(isNumberType(val))
@@ -145,7 +149,7 @@ public class DataParser
 			return null;
 		}
 	}
-	public Double parseDouble(Object val)
+	public static Double parseDouble(Object val)
 	{
 		if(val==null) return null;
 		if(isNumberType(val))
@@ -166,7 +170,7 @@ public class DataParser
 		}
 	}
 	
-	public BigDecimal parseBigDecimal(Object val)
+	public static BigDecimal parseBigDecimal(Object val)
 	{
 		if(val==null) return null;
 		 if(val instanceof BigDecimal)
@@ -188,35 +192,35 @@ public class DataParser
 		}
 	}
 	
-//	public Date parseDate(Object val)
-//	{
-//		if(val==null) return null;
-//		if(val instanceof Date)
-//		{
-//			return (Date)val;
-//		}
-//		else if(val instanceof java.sql.Date)
-//		{
-//			return (Date)val;
-//		}
-//		else if(val instanceof java.sql.Timestamp)
-//		{
-//			return (Date)val;
-//		}
-//		else if(val instanceof String)
-//		{
-//			try {
-//				return DateUtils.parseDate(val+"", "yyyy-MM-dd HH:mm:ss");
-//			} catch (ParseException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		return null;
-//	}
+	public static Date parseDate(Object val)
+	{
+		if(val==null) return null;
+		if(val instanceof Date)
+		{
+			return (Date)val;
+		}
+		else if(val instanceof java.sql.Date)
+		{
+			return (Date)val;
+		}
+		else if(val instanceof java.sql.Timestamp)
+		{
+			return (Date)val;
+		}
+		else if(val instanceof String)
+		{
+			try {
+				return DateUtils.parseDate(val+"", "yyyy-MM-dd HH:mm:ss");
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
 	
-	public Character parseChar(Object val)
+	public static Character parseChar(Object val)
 	{
 		if(val==null) return null;
 		if(val instanceof String)
@@ -229,7 +233,7 @@ public class DataParser
 		}
 	}
 	
-	public boolean isNumberType(Object valueNotNull)
+	public static boolean isNumberType(Object valueNotNull)
 	{
 		if(valueNotNull instanceof Integer)
 		{
@@ -261,7 +265,7 @@ public class DataParser
 		}
 	}
 	
-	public Short parseShort(Object val)
+	public static Short parseShort(Object val)
 	{
 		if(val==null) return null;
 		if(isNumberType(val))
@@ -282,7 +286,7 @@ public class DataParser
 		}
 	}
 	
-	public Long parseLong(Object val)
+	public static Long parseLong(Object val)
 	{
 		if(val==null) return null;
 		if(isNumberType(val))
