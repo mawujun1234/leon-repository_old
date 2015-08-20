@@ -8,28 +8,28 @@ import javax.persistence.MappedSuperclass;
 import com.mawujun.repository.hibernate.validate.ValidateEntity;
 
 /**
+ * 自动增长identity
  * 统一定义id的entity基类.是使用自动生成主键作为生成策略
- * 
- * 基类统一定义id的属性名称、数据类型、列名映射及生成策略.
- * 子类可重载getId()函数重定义id的列名映射和生成策略.
+ * 适用于MySQL、DB2、MS SQL Server，采用数据库生成的主键，用于为long、short、int类型生成唯一标识
+ * 使用SQL Server 和 MySQL 的自增字段，这个方法不能放到 Oracle 中，Oracle 不支持自增字段，要设定sequence（MySQL 和 SQL Server 中很常用）
  * 
  * @author mawujun
  */
 //JPA 基类的标识
 @MappedSuperclass
-public abstract class AutoIdEntity<ID> extends ValidateEntity implements IdEntity<ID> {
+public abstract class AutoIdEntity  implements IdEntity<Integer> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@org.hibernate.annotations.AccessType("property")
-	protected ID id;
+	protected Integer id;
 
 	
-	public ID getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(ID id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

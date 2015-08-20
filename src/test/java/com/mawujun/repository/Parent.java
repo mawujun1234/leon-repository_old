@@ -8,7 +8,7 @@ import com.mawujun.repository.idEntity.AutoIdEntity;
 
 @Entity
 @Table(name="t_parent")
-public class Parent extends AutoIdEntity<Integer> {
+public class Parent extends AutoIdEntity {
 	@Column(length=40)
 	private String name;
 

@@ -14,7 +14,7 @@ import com.mawujun.repository.idEntity.AutoIdEntity;
 
 @Entity
 @Table(name="t_EntityTest")
-public class EntityTest extends AutoIdEntity<Integer> {
+public class EntityTest extends AutoIdEntity {
 	private String firstName;
 	private String lastName;
 	private Integer age;

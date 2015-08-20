@@ -11,7 +11,9 @@ import javax.persistence.SequenceGenerator;
  * 此时统一的IdEntity基类就不再合适了，最好把它变为一个Id接口，然后在每个Entity中定义id及其Sequence。
  * 注意这里有个性能优化的地方，Hibernate一次问Oracle要了20个id自己慢慢用。相应的，sequence创建时需要修改increment by=20
  * create sequence SEQ_USER start with 100 increment by 20;这是要在oracle中执行的
-
+ * 
+ * 
+ * 这只是个例子，具体的要修改@SequenceGenerator(name = "UserSequence", sequenceName = "SEQ_USER", allocationSize=20)中的值
  * @author mawujun
  *
  */
