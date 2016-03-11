@@ -35,7 +35,7 @@ public class MyMapperProxy<T> extends MapperProxy<T> {
 	private static final long serialVersionUID = 1L;
 
 	
-	private HibernateDao<Object,Serializable> hibernateDao=null;
+	private HibernateDao<T,Serializable> hibernateDao=null;
 	
 	private MybatisRepository mybatisRepository;
 	private String namespace;
@@ -60,7 +60,7 @@ public class MyMapperProxy<T> extends MapperProxy<T> {
 		if(mapperInterface.getGenericInterfaces().length!=0){
 			Type[] types=((ParameterizedType)mapperInterface.getGenericInterfaces()[0]).getActualTypeArguments();
 
-			hibernateDao=new HibernateDao<Object,Serializable>((Class)types[0]);
+			hibernateDao=new HibernateDao<T,Serializable>((Class)types[0]);
 		}
 		
 		
