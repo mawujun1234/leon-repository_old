@@ -668,6 +668,8 @@ public class HibernateDao<T, ID extends Serializable> implements IHibernateDao<T
 		    	this.getSession().clear();
 		    }
 		}
+		this.getSession().flush();
+    	this.getSession().clear();
 		return i;
 	}
 	public int deleteBatch(final Collection<T> entities){
@@ -683,10 +685,12 @@ public class HibernateDao<T, ID extends Serializable> implements IHibernateDao<T
 		    	this.getSession().clear();
 		    }
 		}
+		this.getSession().flush();
+    	this.getSession().clear();
 		return i;
 	}
 
-	public int deleteBatch(final ID... IDS){
+	public int deleteBatch(final ID... IDS) {
 		if(cancelExecute(IDS)){
 			return 0;
 		}
@@ -707,7 +711,8 @@ public class HibernateDao<T, ID extends Serializable> implements IHibernateDao<T
 			query.setParameter("id"+i, id);
 			i++;
 		}
-		session.clear();
+		this.getSession().flush();
+    	this.getSession().clear();
 		return query.executeUpdate();
 	}
 	/**
@@ -716,7 +721,8 @@ public class HibernateDao<T, ID extends Serializable> implements IHibernateDao<T
 	public int deleteAll() {
 		StringBuilder builder=new StringBuilder("delete from " + this.entityClass.getName()+ " obj  ");
 		Query query = this.getSession().createQuery(builder.toString());
-		this.getSession().clear();
+		this.getSession().flush();
+    	this.getSession().clear();
 		return query.executeUpdate();
 	}
 	/**

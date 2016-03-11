@@ -27,7 +27,7 @@ public class HibernateDDLGenerator {
 	
 	public static String executeReturn(DialectEnum dialectEnum, Class<?>... classes) {
 		String path=FileUtils.getTempDirectory()+UUID.randomUUID().toString()+".sql";
-		execute(DialectEnum.H2Dialect,path, classes);
+		execute(DialectEnum.h2,path, classes);
 		
 		BufferedReader reader = null;
 		StringBuilder builder=new StringBuilder();
@@ -71,7 +71,7 @@ public class HibernateDDLGenerator {
 		}
 
 		Configuration configuration = new AnnotationConfiguration();
-		configuration.setProperty(Environment.DIALECT, dialectEnum.getClassName());
+		configuration.setProperty(Environment.DIALECT, dialectEnum.get_hibernate_dialect());
 		
 		
 		for (Class<?> entityClass : classes) {

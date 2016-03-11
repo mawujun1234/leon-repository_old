@@ -56,7 +56,7 @@ public class CndTest  extends DbunitBaseRepositoryTest {
 	@Before
 	public void before() throws Exception {
 		//DatabaseOperation.CLEAN_INSERT是DELETE_ALL和 INSERT的绑定. 
-		DatabaseOperation.CLEAN_INSERT.execute(dbConn, getXMLDataSet(FileUtils.getCurrentClassPath(this)+"RepositoryTest.xml"));
+		DatabaseOperation.CLEAN_INSERT.execute(dbConn, getXMLDataSet(FileUtils.getCurrentClassPath(this)+"RepositoryConfigTest.xml"));
 	}
 	@After
 	public void after() throws Exception {

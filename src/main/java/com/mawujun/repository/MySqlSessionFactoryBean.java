@@ -14,6 +14,8 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 	 this.sqlSessionFactory = buildSqlSessionFactory();之后通过反射修改Configuration的MapperRegistry
 	再重载MapperRegistry的addMapper方法，继承MapperProxyFactory类重载newInstance方法
 	替换MapperProxy类为自己的类
+	
+	https://segmentfault.com/a/1190000004238437  mybatis如何根据mapper接口生成其实现类
  * @author mawujun
  *
  */
@@ -30,6 +32,7 @@ public class MySqlSessionFactoryBean extends SqlSessionFactoryBean {
 		
 		MyMapperRegistry mapperRegistry=new MyMapperRegistry(configuration);
 		mapperRegistry.setSessionFactory(sessionFactory);
+		
 		Field field = configuration.getClass().getDeclaredField("mapperRegistry");
 		field.setAccessible(true);
 		field.set(configuration, mapperRegistry);

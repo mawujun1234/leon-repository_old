@@ -31,44 +31,49 @@ Sybase Anywhere	org.hibernate.dialect.SybaseAnywhereDialect
  *
  */
 public enum DialectEnum {
-	MySQL5InnoDBDialect("org.hibernate.dialect.MySQL5InnoDBDialect"), 
-	MySQLDialect_mybatis("com.mawujun.repository.mybatis.dialect.MySQLDialect"),
+	mysql(org.hibernate.dialect.MySQL5InnoDBDialect.class,com.mawujun.repository.mybatis.dialect.MySQLDialect.class), 
+	//MySQLDialect_mybatis(com.mawujun.repository.mybatis.dialect.MySQLDialect.class),
 	
-	Oracle10gDialect("org.hibernate.dialect.Oracle10gDialect"), 
-	OracleDialect_mybatis("com.mawujun.repository.mybatis.dialect.OracleDialect"),
+	oracle(org.hibernate.dialect.Oracle10gDialect.class,com.mawujun.repository.mybatis.dialect.OracleDialect.class), 
+	//OracleDialect_mybatis(com.mawujun.repository.mybatis.dialect.OracleDialect.class),
 	
-	H2Dialect("org.hibernate.dialect.H2Dialect"), 
-	H2Dialect_mybatis("com.mawujun.repository.mybatis.dialect.H2Dialect"),
+	h2(org.hibernate.dialect.H2Dialect.class,com.mawujun.repository.mybatis.dialect.H2Dialect.class), 
+	//H2Dialect_mybatis(com.mawujun.repository.mybatis.dialect.H2Dialect.class),
 	
-	DB2Dialect("org.hibernate.dialect.DB2Dialect"), 
-	DB2Dialect_mybatis("com.mawujun.repository.mybatis.dialect.DB2Dialect"),
+	db2(org.hibernate.dialect.DB2Dialect.class,com.mawujun.repository.mybatis.dialect.DB2Dialect.class), 
+	//DB2Dialect_mybatis(com.mawujun.repository.mybatis.dialect.DB2Dialect.class),
 	
-	DerbyTenSevenDialect("org.hibernate.dialect.DerbyTenSevenDialect"), 
-	DerbyDialect_mybatis("com.mawujun.repository.mybatis.dialect.DerbyDialect"),
+	derby(org.hibernate.dialect.DerbyTenSevenDialect.class,com.mawujun.repository.mybatis.dialect.DerbyDialect.class), 
+	//DerbyDialect_mybatis(com.mawujun.repository.mybatis.dialect.DerbyDialect.class),
 	
-	HSQLDialect("org.hibernate.dialect.HSQLDialect"), 
-	HSQLDialect_mybatis("com.mawujun.repository.mybatis.dialect.HSQLDialect"),
+	hsql(org.hibernate.dialect.HSQLDialect.class,com.mawujun.repository.mybatis.dialect.HSQLDialect.class), 
+	//HSQLDialect_mybatis(com.mawujun.repository.mybatis.dialect.HSQLDialect.class),
 	
-	PostgresPlusDialect("org.hibernate.dialect.PostgresPlusDialect"), 
-	PostgreSQLDialect_mybatis("com.mawujun.repository.mybatis.dialect.PostgreSQLDialect"),
+	postgres(org.hibernate.dialect.PostgresPlusDialect.class,com.mawujun.repository.mybatis.dialect.PostgreSQLDialect.class), 
+	//PostgreSQLDialect_mybatis(com.mawujun.repository.mybatis.dialect.PostgreSQLDialect.class),
 	
-	SQLServer2008Dialect("org.hibernate.dialect.SQLServer2008Dialect"), 
-	SQLServer2005Dialect_mybatis("com.mawujun.repository.mybatis.dialect.SQLServer2005Dialect"),
+	sqlserver(org.hibernate.dialect.SQLServer2008Dialect.class,com.mawujun.repository.mybatis.dialect.SQLServer2005Dialect.class), 
+	//SQLServer2005Dialect_mybatis(com.mawujun.repository.mybatis.dialect.SQLServer2005Dialect.class),
 	
-	SybaseDialect("org.hibernate.dialect.SybaseDialect"), 
-	SybaseDialect_mybatis("com.mawujun.repository.mybatis.dialect.SybaseDialect");
+	sybase(org.hibernate.dialect.SybaseDialect.class,com.mawujun.repository.mybatis.dialect.SybaseDialect.class);
+	//SybaseDialect_mybatis(com.mawujun.repository.mybatis.dialect.SybaseDialect.class);
 
-	private String className;
 
-	private DialectEnum(String className) {
+	private Class<?> dialect_mybatis;
+	private Class<?> dialect_hibernate;
 
-		this.className = className;
-
+	private DialectEnum(Class<?> dialect_hibernate,Class<?> dialect_mybatis) {
+		this.dialect_hibernate = dialect_hibernate;
+		this.dialect_mybatis = dialect_mybatis;
+	}
+	
+	public String get_hibernate_dialect(){
+		return this.dialect_hibernate.getName();
+	}
+	
+	public String get_mybatis_dialect(){
+		return this.dialect_mybatis.getName();
 	}
 
-	public String getClassName() {
 
-		return className;
-
-	}
 }
