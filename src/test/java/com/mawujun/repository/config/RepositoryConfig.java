@@ -133,7 +133,7 @@ public class RepositoryConfig {
 		HibernateTransactionManager transactionManager=new HibernateTransactionManager();
 		//transactionManager.setDataSource(dataSource());
 		transactionManager.setSessionFactory(sessionFactory());
-		
+		transactionManager.setRollbackOnCommitFailure(true);
 		
 		return transactionManager;
 	}
