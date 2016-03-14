@@ -13,7 +13,7 @@ import com.mawujun.repository.idEntity.IdEntity;
 import com.mawujun.utils.page.PageParam;
 import com.mawujun.utils.page.PageResult;
 
-@Transactional(propagation=Propagation.REQUIRED)
+@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
 public abstract class AbstractService<T extends IdEntity<ID>, ID extends Serializable> {
 	/**
 	 * 用来返回默认的Repository

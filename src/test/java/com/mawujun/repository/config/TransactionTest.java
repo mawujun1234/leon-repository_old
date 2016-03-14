@@ -21,31 +21,32 @@ public class TransactionTest {
 	//@Sql("/test-user-data.sql")
     public void transaction() {  
 		EntityTestService entityTestService=context.getBean(EntityTestService.class);
+		entityTestService.transaction(entity.getId(),entity1.getId());
 
-		assertEquals(0,entityTestService.queryAll().size());
-		
-		EntityTest entity=new EntityTest();
-		entity.setFirstName("ma");
-		entity.setLastName("wujun");
-		entity.setEmail("160649888@163.com");
-		entityTestService.create(entity);
-		
-		//Integer id=entity.fw
-		
-		EntityTest entity1=new EntityTest();
-		entity1.setFirstName("ma1");
-		entity1.setLastName("wujun1");
-		entity1.setEmail("160649888@163.com1");
-		entityTestService.create(entity1);
-		
-		assertEquals(2,entityTestService.queryAll().size());
-		
-		try {
-			entityTestService.transaction(entity.getId(),entity1.getId());
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		assertEquals(2,entityTestService.queryAll().size());
+//		assertEquals(0,entityTestService.queryAll().size());
+//		
+//		EntityTest entity=new EntityTest();
+//		entity.setFirstName("ma");
+//		entity.setLastName("wujun");
+//		entity.setEmail("160649888@163.com");
+//		entityTestService.create(entity);
+//		
+//		//Integer id=entity.fw
+//		
+//		EntityTest entity1=new EntityTest();
+//		entity1.setFirstName("ma1");
+//		entity1.setLastName("wujun1");
+//		entity1.setEmail("160649888@163.com1");
+//		entityTestService.create(entity1);
+//		
+//		assertEquals(2,entityTestService.queryAll().size());
+//		
+//		try {
+//			entityTestService.transaction(entity.getId(),entity1.getId());
+//		} catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		
+//		assertEquals(2,entityTestService.queryAll().size());
     }  
 }

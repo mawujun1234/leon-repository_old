@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 import com.mawujun.repository.idEntity.AutoIdEntity;
 
-@Entity
+//@Entity
 @Table(name="t_parent")
 public class Parent extends AutoIdEntity {
 	@Column(length=40)

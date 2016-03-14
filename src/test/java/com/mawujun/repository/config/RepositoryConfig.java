@@ -15,9 +15,10 @@ import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -31,17 +32,20 @@ import com.mawujun.repository.mybatis.PageInterceptor;
 import com.mawujun.repository.mybatis.YesNoTypeHandler;
 
 
+
+//http://10176523.cn/archives/36/ 改成整合成使用hibernate5 试试，看看有没有问题
 @Configuration
 @EnableTransactionManagement(proxyTargetClass=true)
+//@EnableAspectJAutoProxy
 @ComponentScan("com.mawujun")
 public class RepositoryConfig {
 	private String jdbc_packagesToScan="com.mawujun";
-	private String jdbc_db_type="h2";
+	private String jdbc_db_type="oracle";
 	
-	private String jdbc_driver="org.h2.Driver";
-	private String jdbc_url="jdbc:h2:mem:BaseProject;DB_CLOSE_DELAY=-1;MVCC=TRUE";
-	private String jdbc_username="sa";
-	private String jdbc_password;
+	private String jdbc_driver="oracle.jdbc.driver.OracleDriver";//"org.h2.Driver";
+	private String jdbc_url="jdbc:oracle:thin:@127.0.0.1:1521:ems";//"jdbc:h2:mem:BaseProject;DB_CLOSE_DELAY=-1;MVCC=TRUE";
+	private String jdbc_username="ems";//"sa";
+	private String jdbc_password="ems";
 	
 	@Bean
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
@@ -68,6 +72,7 @@ public class RepositoryConfig {
 	public DataSource dataSource() throws SQLException {
 		//https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_DruidDataSource%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE
 		DruidDataSource datasource=new DruidDataSource();
+		//BasicDataSource datasource=new BasicDataSource();
 		datasource.setDriverClassName(jdbc_driver);
 		datasource.setUrl(jdbc_url);
 		datasource.setUsername(jdbc_username);
@@ -133,7 +138,8 @@ public class RepositoryConfig {
 		HibernateTransactionManager transactionManager=new HibernateTransactionManager();
 		//transactionManager.setDataSource(dataSource());
 		transactionManager.setSessionFactory(sessionFactory());
-		transactionManager.setRollbackOnCommitFailure(true);
+		//transactionManager.setRollbackOnCommitFailure(true);
+		//transactionManager.set
 		
 		return transactionManager;
 	}

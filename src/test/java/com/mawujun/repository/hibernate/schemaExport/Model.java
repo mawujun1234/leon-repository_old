@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 
 import com.mawujun.repository.idEntity.AutoIdEntity;
 
-@Entity
+//@Entity
 public class Model extends AutoIdEntity {
 	private String name;
 	private int age;

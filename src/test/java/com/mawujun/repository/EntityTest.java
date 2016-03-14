@@ -11,10 +11,11 @@ import javax.persistence.Version;
 import org.hibernate.validator.constraints.Email;
 
 import com.mawujun.repository.idEntity.AutoIdEntity;
+import com.mawujun.repository.idEntity.UUIDEntity;
 
 @Entity
 @Table(name="t_EntityTest")
-public class EntityTest extends AutoIdEntity {
+public class EntityTest extends UUIDEntity{//extends AutoIdEntity {
 	private String firstName;
 	private String lastName;
 	private Integer age;
@@ -30,8 +31,8 @@ public class EntityTest extends AutoIdEntity {
 	@Embedded
 	private Address address;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	private Parent parent;
+//	@ManyToOne(fetch=FetchType.LAZY)
+//	private Parent parent;
 	
 	
 	public String getEmail() {
@@ -71,12 +72,12 @@ public class EntityTest extends AutoIdEntity {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-	public Parent getParent() {
-		return parent;
-	}
-	public void setParent(Parent parent) {
-		this.parent = parent;
-	}
+//	public Parent getParent() {
+//		return parent;
+//	}
+//	public void setParent(Parent parent) {
+//		this.parent = parent;
+//	}
 	public Boolean getSex() {
 		return sex;
 	}
