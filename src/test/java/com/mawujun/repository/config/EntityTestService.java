@@ -1,20 +1,14 @@
 package com.mawujun.repository.config;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mawujun.repository.EntityTest;
 import com.mawujun.repository.IRepository;
-import com.mawujun.repository.hibernate.HibernateDao;
 import com.mawujun.service.AbstractService;
 
 @Service
@@ -43,23 +37,17 @@ public class EntityTestService  extends AbstractService<EntityTest,String>{
 		sessionFactory.getCurrentSession().save(entity);
 		
 
-//		Connection conn = DataSourceUtils.getConnection(dataSource);
-//		try {
-//			conn.commit();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 		
-//		if(true){
-//			throw new RuntimeException("");
-//		}
-//		
-//		EntityTest entity1=new EntityTest();
-//		entity1.setFirstName("ma1");
-//		entity1.setLastName("wujun1");
-//		entity1.setEmail("160649888@163.com1");
-//		entityTestRepository.create(entity1);
+		if(true){
+			//throw new RuntimeException("");
+		}
+		
+		EntityTest entity1=new EntityTest();
+		entity1.setFirstName("ma1");
+		entity1.setLastName("wujun1");
+		entity1.setEmail("160649888@163.com1");
+		entityTestRepository.create(entity1);
 		
 		
 //		EntityTest entity1=new EntityTest();

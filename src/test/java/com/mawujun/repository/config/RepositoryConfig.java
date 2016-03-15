@@ -11,6 +11,7 @@ import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandler;
 import org.hibernate.SessionFactory;
+import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
@@ -39,9 +41,10 @@ import com.mawujun.repository.mybatis.YesNoTypeHandler;
 @Configuration
 @EnableTransactionManagement(mode=AdviceMode.PROXY)
 //@EnableAspectJAutoProxy(proxyTargetClass=false)
-@ComponentScan("com.mawujun")
+@ComponentScan("com.mawujun.repository.config")
+//@MapperScan(basePackages="com.mawujun.repository.config",sqlSessionFactoryRef="sqlSessionFactory",annotationClass=org.springframework.stereotype.Repository.class)
 public class RepositoryConfig  implements TransactionManagementConfigurer{
-	private String jdbc_packagesToScan="com.mawujun";
+	private String jdbc_packagesToScan="com.mawujun.repository.config";
 	private String jdbc_db_type="oracle";
 	
 	private String jdbc_driver="oracle.jdbc.driver.OracleDriver";//"org.h2.Driver";
@@ -68,6 +71,15 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 		//sqlSessionFactoryBean.setMapperLocations(mapperLocations);
 		
 		return sqlSessionFactoryBean.getObject();
+	}
+	
+	@Bean
+	public MapperScannerConfigurer mapperScannerConfigurer() {
+		MapperScannerConfigurer mapperScannerConfigurer=new MapperScannerConfigurer();
+		mapperScannerConfigurer.setBasePackage(jdbc_packagesToScan);
+		mapperScannerConfigurer.setAnnotationClass(org.springframework.stereotype.Repository.class);
+		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
+		return mapperScannerConfigurer;
 	}
 	
 	@Bean
@@ -103,14 +115,7 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 		return datasource;
 	}
 	
-	@Bean
-	public MapperScannerConfigurer mapperScannerConfigurer() {
-		MapperScannerConfigurer mapperScannerConfigurer=new MapperScannerConfigurer();
-		mapperScannerConfigurer.setBasePackage(jdbc_packagesToScan);
-		mapperScannerConfigurer.setAnnotationClass(org.springframework.stereotype.Repository.class);
-		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
-		return mapperScannerConfigurer;
-	}
+
 	
 	@Bean
 	@Lazy(false)

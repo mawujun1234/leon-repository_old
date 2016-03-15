@@ -11,24 +11,21 @@ import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandler;
 import org.hibernate.SessionFactory;
-import org.mybatis.spring.mapper.MapperScannerConfigurer;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
-import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.mawujun.repository.DialectEnum;
-import com.mawujun.repository.MySqlSessionFactoryBean;
 import com.mawujun.repository.mybatis.DatabaseIdProviderCustom;
 import com.mawujun.repository.mybatis.PageInterceptor;
 import com.mawujun.repository.mybatis.YesNoTypeHandler;
@@ -39,7 +36,9 @@ import com.mawujun.repository.mybatis.YesNoTypeHandler;
 @Configuration
 @EnableTransactionManagement(mode=AdviceMode.PROXY)
 //@EnableAspectJAutoProxy(proxyTargetClass=false)
-@ComponentScan("com.mawujun.repository.test")
+@ComponentScan(basePackages="com.mawujun.repository.test")
+//includeFilters = @Filter(type = FilterType.ANNOTATION, value = {Repository.class}))
+@MapperScan("com.mawujun.repository.test")
 public class RepositoryConfig  implements TransactionManagementConfigurer{
 	private String jdbc_packagesToScan="com.mawujun.repository.test";
 	private String jdbc_db_type="oracle";
@@ -51,9 +50,13 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 	
 	@Bean
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
-		MySqlSessionFactoryBean sqlSessionFactoryBean=new MySqlSessionFactoryBean();
+		//MySqlSessionFactoryBean sqlSessionFactoryBean=new MySqlSessionFactoryBean();
+		//sqlSessionFactoryBean.setSessionFactory(sessionFactory());
+		
+		SqlSessionFactoryBean sqlSessionFactoryBean=new SqlSessionFactoryBean();
+		
 		sqlSessionFactoryBean.setDataSource(dataSource());
-		sqlSessionFactoryBean.setSessionFactory(sessionFactory());
+		
 		
 		sqlSessionFactoryBean.setTypeHandlers(new TypeHandler[]{new YesNoTypeHandler()});
 		
@@ -69,6 +72,14 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 		
 		return sqlSessionFactoryBean.getObject();
 	}
+//	@Bean
+//	public MapperScannerConfigurer mapperScannerConfigurer() {
+//		MapperScannerConfigurer mapperScannerConfigurer=new MapperScannerConfigurer();
+//		mapperScannerConfigurer.setBasePackage(jdbc_packagesToScan);
+//		mapperScannerConfigurer.setAnnotationClass(org.springframework.stereotype.Repository.class);
+//		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
+//		return mapperScannerConfigurer;
+//	}
 	
 	@Bean
 	public DataSource dataSource() throws SQLException {
@@ -97,23 +108,15 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 //		log_filter.setResultSetLogEnabled(false);
 		Slf4jLogFilter log_filter=new Slf4jLogFilter();
 		log_filter.setResultSetLogEnabled(true);
-		ArrayList<Filter> filter_list=new ArrayList<Filter>();
+		ArrayList<com.alibaba.druid.filter.Filter> filter_list=new ArrayList<com.alibaba.druid.filter.Filter>();
 		filter_list.add(log_filter);
 		datasource.setProxyFilters(filter_list);
 		return datasource;
 	}
 	
-	@Bean
-	public MapperScannerConfigurer mapperScannerConfigurer() {
-		MapperScannerConfigurer mapperScannerConfigurer=new MapperScannerConfigurer();
-		mapperScannerConfigurer.setBasePackage(jdbc_packagesToScan);
-		mapperScannerConfigurer.setAnnotationClass(org.springframework.stereotype.Repository.class);
-		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
-		return mapperScannerConfigurer;
-	}
+	
 	
 	@Bean
-	@Lazy(false)
 	public SessionFactory sessionFactory() throws IOException, SQLException {
 		LocalSessionFactoryBean localSessionFactoryBean=new LocalSessionFactoryBean();
 		localSessionFactoryBean.setDataSource(dataSource());
