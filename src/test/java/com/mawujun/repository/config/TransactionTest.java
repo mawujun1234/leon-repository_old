@@ -4,24 +4,35 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mawujun.repository.EntityTest;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+//@Transactional(transactionManager= "transactionManager") 
+@ContextConfiguration(classes={RepositoryConfig.class})
 public class TransactionTest {
-	static ApplicationContext context;
+	//static ApplicationContext context;
+	@Autowired
+	EntityTestService entityTestService;
 	@BeforeClass  
     public static void setUpBeforeClass() throws Exception { 
-		 context = new AnnotationConfigApplicationContext(RepositoryConfig.class);
+		 //context = new AnnotationConfigApplicationContext(RepositoryConfig.class);
     }  
 	
 	@Test  
-	//@Sql("/test-user-data.sql")
+	//@Rollback(value=false)
     public void transaction() {  
-		EntityTestService entityTestService=context.getBean(EntityTestService.class);
-		entityTestService.transaction(entity.getId(),entity1.getId());
+		//EntityTestService entityTestService=context.getBean(EntityTestService.class);
+		entityTestService.transaction("","");
 
 //		assertEquals(0,entityTestService.queryAll().size());
 //		

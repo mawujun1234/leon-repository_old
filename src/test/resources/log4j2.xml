@@ -6,7 +6,7 @@
         <property name="rolling_file_name">logs/app-%d{yyyy-MM-dd}-%i.log.gz</property>
         
         <property name="every_file_size">10M</property><!-- 日志切割的最小单位 -->
-        <property name="output_log_level">debug</property><!-- 日志输出级别 -->
+        <property name="output_log_level">TRACE</property><!-- 日志输出级别 -->
   </Properties>
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">

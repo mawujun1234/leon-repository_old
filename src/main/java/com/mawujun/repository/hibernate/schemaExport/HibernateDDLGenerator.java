@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 
+import com.fasterxml.classmate.AnnotationConfiguration;
 import com.mawujun.repository.DialectEnum;
 import com.mawujun.utils.file.FileUtils;
 
@@ -66,32 +66,32 @@ public class HibernateDDLGenerator {
 	 */
 	public static void execute(DialectEnum dialectEnum,String path, Class<?>... classes) {
 
-		if(classes==null || classes.length==0){
-			throw new RuntimeException("请输入类");
-		}
-
-		Configuration configuration = new AnnotationConfiguration();
-		configuration.setProperty(Environment.DIALECT, dialectEnum.get_hibernate_dialect());
-		
-		
-		for (Class<?> entityClass : classes) {
-			configuration.addAnnotatedClass(entityClass);
-		}
-		
-		boolean consolePrint = true;//是否输出在控制台
-		boolean exportInDatabase = false;//是否导入到数据库
-		
-		 System.out.println("==============================================="+System.getProperty("user.dir"));	
-//		 if(path==null){
-//			 consolePrint=true;
-//		 }
-		 
-		SchemaExport schemaExport = new SchemaExport(configuration);
-		schemaExport.setDelimiter(";");
-		schemaExport.setOutputFile(path);	
-
-		//schemaExport.execute(script, export, justDrop, justCreate)后两个参数表示只有drop的ddl，只有create的dl
-		schemaExport.create(consolePrint, exportInDatabase);
+//		if(classes==null || classes.length==0){
+//			throw new RuntimeException("请输入类");
+//		}
+//
+//		Configuration configuration = new AnnotationConfiguration();
+//		configuration.setProperty(Environment.DIALECT, dialectEnum.get_hibernate_dialect());
+//		
+//		
+//		for (Class<?> entityClass : classes) {
+//			configuration.addAnnotatedClass(entityClass);
+//		}
+//		
+//		boolean consolePrint = true;//是否输出在控制台
+//		boolean exportInDatabase = false;//是否导入到数据库
+//		
+//		 System.out.println("==============================================="+System.getProperty("user.dir"));	
+////		 if(path==null){
+////			 consolePrint=true;
+////		 }
+//		 
+//		SchemaExport schemaExport = new SchemaExport(configuration);
+//		schemaExport.setDelimiter(";");
+//		schemaExport.setOutputFile(path);	
+//
+//		//schemaExport.execute(script, export, justDrop, justCreate)后两个参数表示只有drop的ddl，只有create的dl
+//		schemaExport.create(consolePrint, exportInDatabase);
 	}
 	/**
 	 * 导出包下面的所有类

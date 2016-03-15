@@ -9,7 +9,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
 import com.mawujun.repository.idEntity.IdEntity;
 
@@ -53,7 +52,7 @@ public class HibernateUtils {
 	        	}
 	        	
 	        	
-	        	ServiceRegistry  sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();           
+	        	ServiceRegistry  sr = null;//new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();           
 	        	SessionFactory sf = cfg.buildSessionFactory(sr);  
 	        	return sf;
 	            

@@ -1,17 +1,9 @@
-package com.mawujun.repository.config;
-
-import static org.junit.Assert.assertEquals;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
+package com.mawujun.repository.test;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 
-public class Test {
+public class Test1 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -58,10 +50,6 @@ public class Test {
 //		assertEquals(2,entityTestService.queryAll().size());
     }  
 	
-	public static void aaaa(ApplicationContext context) { 
-		EntityTestService entityTestService=context.getBean(EntityTestService.class);
-		entityTestService.queryAll().size();
-		assertEquals(2,entityTestService.queryAll().size());
-	}
+
 
 }

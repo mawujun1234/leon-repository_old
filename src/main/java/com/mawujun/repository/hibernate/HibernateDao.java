@@ -82,6 +82,7 @@ public class HibernateDao<T, ID extends Serializable> implements IHibernateDao<T
 	 */
 	public Session getSession() {
 		return sessionFactory.getCurrentSession();
+		//return sessionFactory.openSession();
 	}
 	public ClassMetadata getClassMetadata(){
 		return this.getSessionFactory().getClassMetadata(entityClass);

@@ -1,4 +1,4 @@
-package com.mawujun.repository.config;
+package com.mawujun.repository.test;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -39,9 +39,9 @@ import com.mawujun.repository.mybatis.YesNoTypeHandler;
 @Configuration
 @EnableTransactionManagement(mode=AdviceMode.PROXY)
 //@EnableAspectJAutoProxy(proxyTargetClass=false)
-@ComponentScan("com.mawujun")
+@ComponentScan("com.mawujun.repository.test")
 public class RepositoryConfig  implements TransactionManagementConfigurer{
-	private String jdbc_packagesToScan="com.mawujun";
+	private String jdbc_packagesToScan="com.mawujun.repository.test";
 	private String jdbc_db_type="oracle";
 	
 	private String jdbc_driver="oracle.jdbc.driver.OracleDriver";//"org.h2.Driver";
@@ -132,7 +132,9 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 		hibernateProperties.put("hibernate.generate_statistics", false);
 		hibernateProperties.put("hibernate.cache.use_structured_entries", false);
 		
-		hibernateProperties.put("hibernate.connection.release_mode", "after_transaction");
+		//hibernateProperties.put("hibernate.connection.release_mode", "after_statement");
+		//hibernateProperties.put("transaction.auto_close_session", false);
+		//hibernateProperties.put("hibernate.connection.autocommit", true);
 		
 		localSessionFactoryBean.setHibernateProperties(hibernateProperties);
 		localSessionFactoryBean.afterPropertiesSet();
