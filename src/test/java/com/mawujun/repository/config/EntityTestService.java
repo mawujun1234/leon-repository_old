@@ -27,7 +27,7 @@ public class EntityTestService  extends AbstractService<EntityTest,Integer>{
 		return entityTestRepository;
 	}
 	public void transaction(boolean bool){
-		
+		logger.debug("=============================================");
 		
 		EntityTest entity=new EntityTest();
 		entity.setFirstName("ma");

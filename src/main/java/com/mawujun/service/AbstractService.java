@@ -4,17 +4,20 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mawujun.repository.IRepository;
 import com.mawujun.repository.cnd.Cnd;
-import com.mawujun.repository.idEntity.IdEntity;
 import com.mawujun.utils.page.PageParam;
 import com.mawujun.utils.page.PageResult;
 
 @Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
 public abstract class AbstractService<T, ID extends Serializable> {
+	
+	protected Logger logger = LogManager.getLogger(this);
 	/**
 	 * 用来返回默认的Repository
 	 * @author mawujun 16064988@qq.com 
