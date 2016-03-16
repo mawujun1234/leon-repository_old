@@ -7,8 +7,13 @@ import java.io.FileInputStream;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,7 +23,6 @@ import org.junit.Test;
 
 import com.mawujun.repository.EntityTest;
 import com.mawujun.repository.hibernate.HibernateUtils;
-import com.mawujun.utils.file.FileUtils;
 import com.mawujun.utils.test.DbunitBaseRepositoryTest;
 
 public class CndTest  extends DbunitBaseRepositoryTest {
@@ -37,10 +41,31 @@ public class CndTest  extends DbunitBaseRepositoryTest {
 	public static void setUpBeforeClass() throws Exception {
 		DbunitBaseRepositoryTest.initHibernate("com/mawujun/repository/hibernate.properties");
 		//repository=new  EntityTestRepository();
-		sessionFactory=HibernateUtils.getSessionFactory("com/mawujun/repository/hibernate.cfg.xml","com/mawujun/repository/hibernate.properties");
-		//sqlSessionFactory=MybatisUtils.getSessionFactory("com/mawujun/repository/Configuration.xml");
-		//repository.setSessionFactory(sessionFactory);
-		//repository.setSqlSessionFactory(sqlSessionFactory);
+		sessionFactory=HibernateUtils.getSessionFactory("com/mawujun/repository/hibernate.cfg.xml");
+		
+//		StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+//    	.configure("com/mawujun/repository/hibernate.cfg.xml") // configures settings from hibernate.cfg.xml
+//		.build();
+//    	//SessionFactory sf = new MetadataSources( standardRegistry ).buildMetadata().buildSessionFactory();
+//    	
+//    	Metadata metadata = new MetadataSources( standardRegistry )
+//       //.addAnnotatedClass( EntityTest.class )
+//       // .addAnnotatedClassName( "org.hibernate.example.Customer" )
+//       // .addResource( "org/hibernate/example/Order.hbm.xml" )
+//       // .addResource( "org/hibernate/example/Product.orm.xml" )
+//        .getMetadataBuilder()
+//        .applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE )
+//        .build();
+//
+//    	sessionFactory= metadata.getSessionFactoryBuilder().build();
+//		
+//		ClassMetadata  classMetadata =sessionFactory.getClassMetadata(EntityTest.class);
+//		classMetadata.getIdentifierPropertyName();
+//		//sqlSessionFactory=MybatisUtils.getSessionFactory("com/mawujun/repository/Configuration.xml");
+//		//repository.setSessionFactory(sessionFactory);
+//		//repository.setSqlSessionFactory(sqlSessionFactory);
+		
+		
 	}
 
 	@AfterClass
@@ -56,7 +81,7 @@ public class CndTest  extends DbunitBaseRepositoryTest {
 	@Before
 	public void before() throws Exception {
 		//DatabaseOperation.CLEAN_INSERT是DELETE_ALL和 INSERT的绑定. 
-		DatabaseOperation.CLEAN_INSERT.execute(dbConn, getXMLDataSet(FileUtils.getCurrentClassPath(this)+"RepositoryConfigTest.xml"));
+		//DatabaseOperation.CLEAN_INSERT.execute(dbConn, getXMLDataSet(FileUtils.getCurrentClassPath(this)+"com/mawujun/repository/RepositoryTest.xml"));
 	}
 	@After
 	public void after() throws Exception {

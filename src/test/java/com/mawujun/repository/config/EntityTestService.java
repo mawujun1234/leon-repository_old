@@ -13,7 +13,7 @@ import com.mawujun.service.AbstractService;
 
 @Service
 @Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
-public class EntityTestService  extends AbstractService<EntityTest,String>{
+public class EntityTestService  extends AbstractService<EntityTest,Integer>{
 	@Autowired
 	EntityTestRepository entityTestRepository;
 	@Autowired
@@ -22,11 +22,11 @@ public class EntityTestService  extends AbstractService<EntityTest,String>{
 	SessionFactory sessionFactory;
 	
 	@Override
-	public IRepository<EntityTest, String> getRepository() {
+	public IRepository<EntityTest, Integer> getRepository() {
 		// TODO Auto-generated method stub
 		return entityTestRepository;
 	}
-	public void transaction(String id1,String id2){
+	public void transaction(boolean bool){
 		
 		
 		EntityTest entity=new EntityTest();
@@ -39,8 +39,8 @@ public class EntityTestService  extends AbstractService<EntityTest,String>{
 
 
 		
-		if(true){
-			//throw new RuntimeException("");
+		if(bool){
+			throw new RuntimeException("");
 		}
 		
 		EntityTest entity1=new EntityTest();

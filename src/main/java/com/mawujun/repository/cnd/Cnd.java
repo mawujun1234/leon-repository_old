@@ -648,20 +648,30 @@ public class Cnd implements PItem{
 //		return sb.toString();
 //	}
 	
+	/**
+	 * 改成hibernate5后，还没有进行更新过
+	 * @author mawujun email:160649888@163.com qq:16064988
+	 * @param classMetadata
+	 * @return
+	 */
+	@Deprecated
 	public String toSql(AbstractEntityPersister classMetadata) {
-		String hql=toHql(classMetadata);
-		//http://fungo.me/java-2/retrieve-sql-query-from-criteria-or-hql.html
-		//http://www.heiqu.com/show-81243-1.html
-		if (hql != null && hql.trim().length() > 0)
-	    {
-	        final QueryTranslatorFactory translatorFactory = new ASTQueryTranslatorFactory();
-	        final SessionFactoryImplementor factory =  classMetadata.getFactory();
-	        final QueryTranslator translator = translatorFactory.createQueryTranslator(hql, hql,
-	            Collections.EMPTY_MAP, factory);
-	        translator.compile(Collections.EMPTY_MAP, false);
-	        return translator.getSQLString();
-	    }
-	    return null;
+		throw new RuntimeException("还没有完善，现在出问题了");
+//		String hql=toHql(classMetadata);
+//		//http://fungo.me/java-2/retrieve-sql-query-from-criteria-or-hql.html
+//		//http://www.heiqu.com/show-81243-1.html
+//		if (hql != null && hql.trim().length() > 0)
+//	    {
+//	        final QueryTranslatorFactory translatorFactory = new ASTQueryTranslatorFactory();
+//	        final SessionFactoryImplementor factory =  classMetadata.getFactory();
+////	        final QueryTranslator translator = translatorFactory.createQueryTranslator(hql, hql,
+////	            Collections.EMPTY_MAP, factory);
+////	        translator.compile(Collections.EMPTY_MAP, false);
+//	        final QueryTranslator translator = translatorFactory.createQueryTranslator(queryIdentifier, queryString, filters, factory, entityGraphQueryHint)(hql, hql,
+//		            Collections.EMPTY_MAP, factory);
+//	        return translator.getSQLString();
+//	    }
+	   // return null;
 	}
 
 	/**

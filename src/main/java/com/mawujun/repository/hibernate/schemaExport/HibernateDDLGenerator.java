@@ -18,7 +18,15 @@ import com.mawujun.repository.DialectEnum;
 import com.mawujun.utils.file.FileUtils;
 
 /**
- * 用来获取sql
+ * 用来获取生成表结构的ddl
+ * 参考：org.hibernate.tool.hbm2ddl.SchemaExport
+ * org.hibernate.tool.hbm2ddl.SchemaExport
+
+org.hibernate.tool.hbm2ddl.SchemaUpdate
+
+org.hibernate.tool.hbm2ddl.SchemaValidator
+
+org.hibernate.tool.schema.spi.SchemaManagementTool or any of its delegates
  * @author mawujun email:16064988@163.com qq:16064988
  *
  */

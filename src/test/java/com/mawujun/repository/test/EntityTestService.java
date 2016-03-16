@@ -34,6 +34,7 @@ public class EntityTestService {
 		entity.setFirstName("ma");
 		entity.setLastName("wujun");
 		entity.setEmail("160649888@163.com");
+		entity.setSex(true);
 		//entityTestRepository.create(entity);
 		session.save(entity);
 		//tran.commit();

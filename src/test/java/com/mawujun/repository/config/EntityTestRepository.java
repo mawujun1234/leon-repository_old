@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import com.mawujun.repository.IRepository;
 
 @Repository
-//@Transactional
-public interface EntityTestRepository extends IRepository<EntityTest, String> {
+public interface EntityTestRepository extends IRepository<EntityTest, Integer> {
 
 }

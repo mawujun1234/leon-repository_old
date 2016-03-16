@@ -14,7 +14,7 @@ import com.mawujun.utils.page.PageParam;
 import com.mawujun.utils.page.PageResult;
 
 @Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
-public abstract class AbstractService<T extends IdEntity<ID>, ID extends Serializable> {
+public abstract class AbstractService<T, ID extends Serializable> {
 	/**
 	 * 用来返回默认的Repository
 	 * @author mawujun 16064988@qq.com 

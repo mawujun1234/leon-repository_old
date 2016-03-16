@@ -42,15 +42,15 @@ import com.mawujun.repository.mybatis.YesNoTypeHandler;
 @EnableTransactionManagement(mode=AdviceMode.PROXY)
 //@EnableAspectJAutoProxy(proxyTargetClass=false)
 @ComponentScan("com.mawujun.repository.config")
-//@MapperScan(basePackages="com.mawujun.repository.config",sqlSessionFactoryRef="sqlSessionFactory",annotationClass=org.springframework.stereotype.Repository.class)
+@MapperScan(basePackages="com.mawujun.repository.config",sqlSessionFactoryRef="sqlSessionFactory",annotationClass=org.springframework.stereotype.Repository.class)
 public class RepositoryConfig  implements TransactionManagementConfigurer{
 	private String jdbc_packagesToScan="com.mawujun.repository.config";
-	private String jdbc_db_type="oracle";
 	
-	private String jdbc_driver="oracle.jdbc.driver.OracleDriver";//"org.h2.Driver";
-	private String jdbc_url="jdbc:oracle:thin:@127.0.0.1:1521:ems";//"jdbc:h2:mem:BaseProject;DB_CLOSE_DELAY=-1;MVCC=TRUE";
-	private String jdbc_username="ems";//"sa";
-	private String jdbc_password="ems";
+	private String jdbc_db_type="h2";//"oracle";//	
+	private String jdbc_driver="org.h2.Driver";//"oracle.jdbc.driver.OracleDriver";//
+	private String jdbc_url="jdbc:h2:mem:BaseProject;DB_CLOSE_DELAY=-1;MVCC=TRUE";//"jdbc:oracle:thin:@127.0.0.1:1521:ems";//
+	private String jdbc_username="sa";//"ems";//
+	private String jdbc_password="";
 	
 	@Bean
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
@@ -58,7 +58,7 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 		sqlSessionFactoryBean.setDataSource(dataSource());
 		sqlSessionFactoryBean.setSessionFactory(sessionFactory());
 		
-		sqlSessionFactoryBean.setTypeHandlers(new TypeHandler[]{new YesNoTypeHandler()});
+		//sqlSessionFactoryBean.setTypeHandlers(new TypeHandler[]{new YesNoTypeHandler()});
 		
 		PageInterceptor pageInterceptor=new PageInterceptor();
 		pageInterceptor.setDialectClass(DialectEnum.valueOf(jdbc_db_type).get_mybatis_dialect());
@@ -74,15 +74,6 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 	}
 	
 	@Bean
-	public MapperScannerConfigurer mapperScannerConfigurer() {
-		MapperScannerConfigurer mapperScannerConfigurer=new MapperScannerConfigurer();
-		mapperScannerConfigurer.setBasePackage(jdbc_packagesToScan);
-		mapperScannerConfigurer.setAnnotationClass(org.springframework.stereotype.Repository.class);
-		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
-		return mapperScannerConfigurer;
-	}
-	
-	@Bean
 	public DataSource dataSource() throws SQLException {
 		//https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_DruidDataSource%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE
 		DruidDataSource datasource=new DruidDataSource();
@@ -95,8 +86,8 @@ public class RepositoryConfig  implements TransactionManagementConfigurer{
 		datasource.setDefaultAutoCommit(false);
 		
 		//通常来说，只需要修改initialSize、minIdle、maxActive。
-		datasource.setInitialSize(1);
-		datasource.setMinIdle(1);
+		datasource.setInitialSize(41);
+		datasource.setMinIdle(4);
 		datasource.setMaxActive(50);
 		//datasource.setMaxWait(600000);
 		

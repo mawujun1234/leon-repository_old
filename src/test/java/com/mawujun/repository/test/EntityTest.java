@@ -1,27 +1,29 @@
 package com.mawujun.repository.test;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.validator.constraints.Email;
 
-import com.mawujun.repository.idEntity.AutoIdEntity;
-import com.mawujun.repository.idEntity.UUIDEntity;
-
 @Entity
 @Table(name="t_EntityTest")
-public class EntityTest extends UUIDEntity{//extends AutoIdEntity {
+public class EntityTest { //extends UUIDEntity{//extends AutoIdEntity {
+
+	@Id
+	@GeneratedValue
+	public UUID id;
+
 	private String firstName;
 	private String lastName;
 	private Integer age;
 	
-	@org.hibernate.annotations.Type(type="yes_no")
-	@Column(length=1)
+
 	private Boolean sex;
 	@Email
 	private String email;
@@ -77,5 +79,12 @@ public class EntityTest extends UUIDEntity{//extends AutoIdEntity {
 	public void setSex(Boolean sex) {
 		this.sex = sex;
 	}
+	public UUID getId() {
+		return id;
+	}
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
 
 }
