@@ -27,10 +27,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import com.mawujun.repository.cnd.Cnd;
 import com.mawujun.utils.file.FileUtils;
-import com.mawujun.utils.page.PageParam;
-import com.mawujun.utils.page.PageResult;
+import com.mawujun.utils.page.Pager;
 import com.mawujun.utils.test.DbunitBaseRepositoryTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -125,12 +125,16 @@ public class RepositoryConfigTest  {
 
 	@Test
 	public void testQueryPage() {
-		PageParam param=PageParam.getInstance(0, 10);
-		PageResult<EntityTest> lists=entityTestRepository.queryPage(param);
+		//PageParam param=PageParam.getInstance(0, 10);
+		//PageResult<EntityTest> lists=entityTestRepository.queryPage(param);
+		Pager<EntityTest> pager=new Pager<EntityTest>();
+		pager.setStart(0);
+		pager.setLimit(10);
+		Pager<EntityTest> lists=entityTestRepository.queryPage(pager);
 		assertEquals(3,lists.getTotal());
-		assertEquals(new Integer(1),lists.getResult().get(0).getId());
-		assertEquals(true,lists.getResult().get(0).getSex());
-		assertEquals(false,lists.getResult().get(1).getSex());
+		assertEquals(new Integer(1),lists.getRoot().get(0).getId());
+		assertEquals(true,lists.getRoot().get(0).getSex());
+		assertEquals(false,lists.getRoot().get(1).getSex());
 	}
 	@Test
 	public void testSave() throws DataSetException, SQLException {

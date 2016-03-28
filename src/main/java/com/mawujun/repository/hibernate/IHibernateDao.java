@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.mawujun.repository.cnd.Cnd;
-import com.mawujun.utils.page.PageParam;
-import com.mawujun.utils.page.PageResult;
 
 /**
  * 限制 方法名称相同的时候，参数个数必须不同，否则MyMapperProxy在调用的时候不能识别，原因是这里不能使用具体的泛型

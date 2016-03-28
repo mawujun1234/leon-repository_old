@@ -19,8 +19,7 @@ import com.mawujun.repository.hibernate.HibernateDao;
 import com.mawujun.repository.hibernate.IHibernateDao;
 import com.mawujun.repository.mybatis.MybatisRepository;
 import com.mawujun.utils.Assert;
-import com.mawujun.utils.page.PageParam;
-import com.mawujun.utils.page.PageResult;
+import com.mawujun.utils.page.Pager;
 
 /**
  * z这个类也可以自己扩展，例如要把某些逻辑写在持久层里的时候，可以为某些类专门指定使用哪个Proxy
@@ -91,8 +90,8 @@ public class MyMapperProxy<T> extends MapperProxy<T> {
 		} else {
 			Class[] paramTypes=method.getParameterTypes();
 			//如果是分页的话
-			if(paramTypes.length==1 && paramTypes[0]==PageParam.class && method.getReturnType()==PageResult.class){
-				return mybatisRepository.selectPage(namespace+"."+method.getName(), (PageParam)args[0]);
+			if(paramTypes.length==1 && paramTypes[0]==Pager.class && method.getReturnType()==Pager.class){
+				return mybatisRepository.selectPage(namespace+"."+method.getName(), (Pager)args[0]);
 			} else {
 				 return super.invoke(proxy, method, args);
 			}

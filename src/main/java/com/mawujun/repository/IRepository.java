@@ -3,8 +3,7 @@ package com.mawujun.repository;
 import java.io.Serializable;
 
 import com.mawujun.repository.hibernate.IHibernateDao;
-import com.mawujun.utils.page.PageParam;
-import com.mawujun.utils.page.PageResult;
+import com.mawujun.utils.page.Pager;
 
 /**
  * 自定义的方法名不要重复，不要重载，因为方法名就对应于sql的id，这个是不能重复的
@@ -25,5 +24,5 @@ public interface IRepository<T, ID extends Serializable> extends IHibernateDao<T
 	 * @param page
 	 * @return
 	 */
-	public PageResult<T> queryPage(PageParam page);
+	public Pager<T> queryPage(Pager<T> pager);
 }

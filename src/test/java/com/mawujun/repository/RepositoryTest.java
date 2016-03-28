@@ -14,7 +14,6 @@ import javax.validation.ConstraintViolationException;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -33,8 +32,7 @@ import com.mawujun.repository.cnd.Cnd;
 import com.mawujun.repository.hibernate.HibernateUtils;
 import com.mawujun.repository.mybatis.MybatisUtils;
 import com.mawujun.utils.file.FileUtils;
-import com.mawujun.utils.page.PageParam;
-import com.mawujun.utils.page.PageResult;
+import com.mawujun.utils.page.Pager;
 import com.mawujun.utils.test.DbunitBaseRepositoryTest;
 
 public class RepositoryTest extends DbunitBaseRepositoryTest {
@@ -125,12 +123,16 @@ public class RepositoryTest extends DbunitBaseRepositoryTest {
 
 	@Test
 	public void testQueryPage() {
-		PageParam param=PageParam.getInstance(0, 10);
-		PageResult<EntityTest> lists=repository.queryPage(param);
+		//PageParam param=PageParam.getInstance(0, 10);
+		//PageResult<EntityTest> lists=repository.queryPage(pager);
+		Pager<EntityTest> pager=new Pager<EntityTest>();
+		pager.setStart(0);
+		pager.setLimit(10);
+		Pager<EntityTest> lists=repository.queryPage(pager);
 		assertEquals(3,lists.getTotal());
-		assertEquals(new Integer(1),lists.getResult().get(0).getId());
-		assertEquals(true,lists.getResult().get(0).getSex());
-		assertEquals(false,lists.getResult().get(1).getSex());
+		assertEquals(new Integer(1),lists.getRoot().get(0).getId());
+		assertEquals(true,lists.getRoot().get(0).getSex());
+		assertEquals(false,lists.getRoot().get(1).getSex());
 	}
 	@Test
 	public void testSave() throws DataSetException, SQLException {

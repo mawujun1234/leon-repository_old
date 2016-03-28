@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mawujun.repository.IRepository;
 import com.mawujun.repository.cnd.Cnd;
-import com.mawujun.utils.page.PageParam;
-import com.mawujun.utils.page.PageResult;
+import com.mawujun.utils.page.Pager;
 
 @Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
 public abstract class AbstractService<T, ID extends Serializable> {
@@ -154,7 +153,7 @@ public abstract class AbstractService<T, ID extends Serializable> {
 	 * @param page
 	 * @return
 	 */
-	public PageResult<T> queryPage(PageParam page) {
-		return this.getRepository().queryPage(page);
+	public Pager<T> queryPage(Pager<T> pager) {
+		return this.getRepository().queryPage(pager);
 	}
 }

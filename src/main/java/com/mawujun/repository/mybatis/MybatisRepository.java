@@ -29,8 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.mawujun.repository.idEntity.UUIDEntity;
 import com.mawujun.repository.idEntity.UUIDGenerator;
 import com.mawujun.utils.ReflectUtils;
-import com.mawujun.utils.page.PageParam;
-import com.mawujun.utils.page.PageResult;
+import com.mawujun.utils.page.Pager;
 
 //@Repository
 /**
@@ -145,20 +144,20 @@ public class MybatisRepository  {
 	 * @param page
 	 * @return
 	 */
-	public PageResult selectPage(String statement, PageParam page)  {	
+	public Pager selectPage(String statement, Pager pager)  {	
 		createCountMapperstatement(statement);
-		PageResult result=new PageResult(page);
+		//PageResult result=new PageResult(page);
 		
-		List<Map<String, Object>> result_list=getSqlSession().selectList(statement,page.getParams(),new RowBounds(page.getStart(),page.getPageSize()));	
-		result.setResult(result_list);
+		List<Map<String, Object>> result_list=getSqlSession().selectList(statement,pager.getParams(),new RowBounds(pager.getStart(),pager.getLimit()));	
+		pager.setRoot(result_list);
 		
-		Integer totalCount=(Integer)this.getSqlSession().selectOne(statement+"_count", page.getParams());
+		Integer totalCount=(Integer)this.getSqlSession().selectOne(statement+"_count", pager.getParams());
 		if(totalCount==null){
 			totalCount=0;
 		}
-		result.setTotal(totalCount);
+		pager.setTotal(totalCount);
 		
-		return result;	
+		return pager;	
 	}
 
 
